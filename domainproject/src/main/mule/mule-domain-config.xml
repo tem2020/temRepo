@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain:mule-domain
+        xmlns:db="http://www.mulesoft.org/schema/mule/db"
+        xmlns:http="http://www.mulesoft.org/schema/mule/http"
+        xmlns="http://www.mulesoft.org/schema/mule/core"
+        xmlns:domain="http://www.mulesoft.org/schema/mule/ee/domain"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xsi:schemaLocation="
+               http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+               http://www.mulesoft.org/schema/mule/ee/domain http://www.mulesoft.org/schema/mule/ee/domain/current/mule-domain-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="f79ef194-ef35-4cdd-9866-c35716caa8db" >
+		<http:listener-connection host="0.0.0.0" port="${http.port}" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="230a9e3c-c43d-4bf8-b41d-e643c4687649" >
+		<db:my-sql-connection host="localhost" port="3306" user="root" database="test" />
+	</db:config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="3c67db0f-58ed-456b-bd1c-ee39940aa440" basePath="/rest" >
+		<http:request-connection host="localhost" port="7070" />
+	</http:request-config>
+	<configuration-properties doc:name="Configuration properties" doc:id="5ac2d4f9-a357-4236-8b3b-ea62f36ab952" file="${env}.properties" />
+	<global-property doc:name="Global Property" doc:id="e1cfe548-f848-4397-9c5b-1436c254e547" name="env" value="dev" />
+
+
+    <!-- configure here resource to be shared within the domain -->
+
+</domain:mule-domain>

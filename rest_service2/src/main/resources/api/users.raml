@@ -1,0 +1,100 @@
+#%RAML 1.0
+baseUri: https://anypoint.mulesoft.com/mocking/api/v1/links/fe61c0ca-b744-495a-9472-66bc1eba0313/userAPI # 
+
+title: users
+
+resourceTypes:
+  collection:
+    usage: this API is used by <<resourcePathName>>
+    description: Api is used to retrive and create <<resourcePathName>>
+    get:
+      description: this Api is used to retrive all details about <<resourcePathName>>
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+               <<exampleReference1>> 
+    post:
+      description: this Api is used to create a details about <<resourcePathName>>
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+               <<exampleReference2>>
+/user:
+  description: this is user resource
+  get:
+    queryParameters:
+      id:
+        type: integer
+        description: send Id as a query parm in req
+        displayName: userID
+        required: true
+      name:
+        type: string
+        description: send name as a query parm
+        displayName: userName
+        required: true
+    description: retrive user information
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              !include examples/getExamples/getUserExample.json
+      404:
+        body:
+          application/json:
+            example:
+              !include examples/getExamples/getUserNotFound.json        
+  post:
+    description: create user information
+  put:
+    description: update user information
+  delete:
+    description: delete user information
+    responses:
+      401:
+        body:
+          application/json:
+            example:
+              "message": "access denied!"
+  /address:
+    type:
+      collection:
+        exampleReference1:  
+          !include examples/getExamples/getAddress.json
+        exampleReference2: 
+          !include examples/postExamples/postAddress.json
+
+    # put:
+    #   description: update user address
+    #   responses:
+    #     202:
+    #       body:
+    #         application/json:
+    #           example:
+    #             !include examples/updateExamples/updateAddress.json
+    #     404:
+    #       body:
+    #         application/json:
+    #           example:
+    #             "message": "unable to update user addres"
+    # delete:
+    #   description: delet user address
+
+  /job:
+    type:
+      collection:
+        exampleReference1: 
+          !include examples/getExamples/getJob.json
+        exampleReference2: 
+          !include examples/postExamples/postAddress.json
+    # put:
+    # delete:
+
+                
+
+  

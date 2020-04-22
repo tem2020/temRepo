@@ -1,0 +1,14 @@
+                {"address": 
+                  [
+                    {
+                      "city": "Silver Spring",
+                      "state": "MD",
+                      "zip": 20401
+                     }, 
+                    {
+                      "city": "Atlanta",
+                      "state": "GA",
+                      "zip": 20702
+                     }
+                  ]
+                }

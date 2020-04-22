@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<flow name="requiestFlow" doc:id="e55ad4a5-d033-4e2e-9d4b-c051b7ab20c2" >
+		<http:listener doc:name="Listener" doc:id="2fe1acf0-3ee3-4054-8efb-bcbe4eb08327" config-ref="HTTP_Listener_config" path="/getProduct"/>
+		<http:request method="GET" doc:name="Request" doc:id="ca36f613-eba9-4bff-8b7e-9438c7b10aa3" path="/products" config-ref="HTTP_Request_configuration"/>
+	</flow>
+</mule>

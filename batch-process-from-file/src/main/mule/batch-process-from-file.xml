@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:batch="http://www.mulesoft.org/schema/mule/batch"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="490c5244-5de8-41f7-bf43-6a932986bc6a" >
+		<http:listener-connection host="0.0.0.0" port="8082" />
+	</http:listener-config>
+	<file:config name="File_Config" doc:name="File Config" doc:id="7961a8cf-ac6f-4309-9e54-5fef687ba42c" />
+	<flow name="batch-process-from-fileFlow" doc:id="0f48edda-7bd3-4634-812a-79872d7bcb2b" >
+		<http:listener doc:name="Listener" doc:id="24e7bcb2-b880-40af-857e-571d1c492e60" path="/batchRead" config-ref="HTTP_Listener_config"/>
+		<flow-ref doc:name="Flow Reference" doc:id="e2d7a557-92e4-4ed0-bb1c-1fa5554aaebd" name="batch-process-from-fileFlow1"/>
+		<batch:job jobName="batch-process-from-fileBatch_Job" doc:id="309f9204-b99d-4e00-8c2f-be2fbb29f77c" >
+			<batch:process-records >
+				<batch:step name="Batch_Step" doc:id="3360c7ce-45c4-422c-bef7-e6be458f4aa8" >
+					<logger level="INFO" doc:name="Logger" doc:id="f08bff0c-6044-4903-9592-ec52bcd8d633" message="#[payload]"/>
+				</batch:step>
+			</batch:process-records>
+			<batch:on-complete >
+				<logger level="INFO" doc:name="Logger" doc:id="009d165f-fff0-46c8-9b3c-41d0157ce79f" message="first batch completed"/>
+			</batch:on-complete>
+		</batch:job>
+		<ee:transform doc:name="Transform Message" doc:id="f45fefb5-3357-4cf2-9a78-103e21159779" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="batch-process-from-fileFlow1" doc:id="004e25bb-8d3a-4279-838d-a968559a080f" >
+		<file:read doc:name="Read" doc:id="2cd5de7d-ae35-4f50-bf2a-9af08839859a" config-ref="File_Config" path="C:\Users\temilla\Desktop\File\test1.txt"/>
+	</flow>
+	<flow name="batch-process-from-fileFlow2" doc:id="78467e8e-2ef7-4122-bfa5-1b84d3695b91" >
+		<http:listener doc:name="Listener" doc:id="24daaee8-3975-4cb8-81e8-51326220aef8" config-ref="HTTP_Listener_config" path="/read"/>
+		<flow-ref doc:name="Flow Reference" doc:id="ae4ed521-a22f-41d9-aea3-020f2a1ba647" name="batch-process-from-fileFlow1"/>
+	</flow>
+</mule>

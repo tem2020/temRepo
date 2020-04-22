@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="530e142e-54f7-4944-9e89-93df5df35402" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="foreachFlow" doc:id="3c3bc688-b16e-4e40-8f0d-f646a12cd5ea" >
+		<http:listener doc:name="fEach" doc:id="6e046502-96ff-4e01-b976-c6589de0abfc" config-ref="HTTP_Listener_config" path="/4each"/>
+		<ee:transform doc:name="Transform Message" doc:id="a4101d55-c89e-4085-8e0d-5ffe2beba793" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+[
+	{
+		"first name": "ababa",
+		"lastname": "kebede"
+	},
+	{
+		"first name": "alemu",
+		"lastname": "abera"
+	}
+]
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="f20f8e38-4a77-4489-b1f8-219214dac757" message="#[payload]"/>
+		<foreach doc:name="For Each" doc:id="842014e0-3b85-4ef7-a5b8-774251163710" >
+			<logger level="INFO" doc:name="Logger" doc:id="f66ec080-6c20-46f9-a762-f535f0fcd087" message="#[payload]"/>
+		</foreach>
+		<logger level="INFO" doc:name="Logger" doc:id="44112093-a8ec-4db0-a094-26fcf18ca99e" message="#[payload]"/>
+	</flow>
+</mule>

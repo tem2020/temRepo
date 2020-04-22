@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="9c1b0be6-8282-436e-9fa2-8658b278e7fc" basePath="/{country}">
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="0f264930-1442-4f4e-b833-cd93eb997aa7" >
+		<http:request-connection host="api.zippopotam.us" />
+	</http:request-config>
+	<flow name="AddressLocator" doc:id="a89e5e90-9ee2-49c6-b086-9596af05644e" >
+		<http:listener doc:name="Listener" doc:id="de1ca319-9343-4917-9ea3-33101543ea96" config-ref="HTTP_Listener_config" path="/{postalcode}"/>
+		<flow-ref doc:name="Flow Reference" doc:id="fda2cfc4-f669-4a16-85d7-e2eff7022bb5" name="postalcodeFlow"/>
+	</flow>
+	<flow name="postalcodeFlow" doc:id="a95facf3-4465-4509-8627-92d83a55847a" >
+		<http:request method="GET" doc:name="Request" doc:id="e1ccf9ba-299c-45e3-872f-4ab6ccb74120" config-ref="HTTP_Request_configuration" path="/us/{postalcode}">
+			<http:uri-params><![CDATA[#[output application/java
+---
+{
+	postalcode: attributes.uriParams.postalcode
+	}]]]></http:uri-params>
+		</http:request>
+	</flow>
+</mule>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="c9a55ad8-b982-4663-8606-30ec4e214de7" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<file:config name="File_Config" doc:name="File Config" doc:id="1ab9b593-2ded-4a47-b067-02d62a4707f0" />
+	<file:config name="File_Config1" doc:name="File Config" doc:id="dc73568a-3e14-4995-8a13-de23061ab401" />
+	<flow name="fileFlow" doc:id="0580b54a-42e8-43ca-8e30-fe7ba744c702" >
+		<http:listener doc:name="Listener" doc:id="b33e77a1-f8b9-4eae-b617-0dd6df85ed07" config-ref="HTTP_Listener_config" path="/write"/>
+		<ee:transform doc:name="Transform Message" doc:id="56d77d35-9ea4-4b62-a190-fca1f63af390" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<file:write doc:name="Write" doc:id="83a31fa0-aa10-400f-b0dc-f4f5fab17f6f" config-ref="File_Config" path="C:\Users\temilla\Desktop\File\test1.txt"/>
+		<file:copy doc:name="Copy" doc:id="fa32c51b-d4cd-4451-b392-0b1e55c18392" config-ref="File_Config1" sourcePath="C:\Users\temilla\Desktop\File\test.txt" targetPath="C:\Users\temilla\Desktop\file2"/>
+		<logger level="INFO" doc:name="Logger" doc:id="4d13de40-976f-4bf9-b666-5167e3ad82e1" message="file successfuly written"/>
+	</flow>
+</mule>

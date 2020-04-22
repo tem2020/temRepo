@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway"
+	xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd">
+	<http:listener-config name="phone-validator-httpListenerConfig" >
+    	<http:listener-connection host="0.0.0.0" port="${http.port}" />
+    </http:listener-config>
+    <apikit:config name="phone-validator-config" api="resource::e42ec32e-befc-4bcd-89ea-c63a21124e26:phone-validator:1.0.0:raml:zip:phone-validator.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+	<http:request-config name="numVer_HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="ac77f2b7-5e17-4c2f-946e-d30004ce6357" >
+		<http:request-connection host="${http.host.numverify}" />
+	</http:request-config>
+	<global-property doc:name="Global Property" doc:id="7303a305-29a8-4d90-ae11-92e03e5e812e" name="env" value="dev" />
+	<configuration-properties doc:name="Configuration properties" doc:id="ec3355e7-0738-4346-a0b1-1c7c4c928e90" file="${env}.properties" />
+	<validation:config name="Validation_Config" doc:name="Validation Config" doc:id="68efd33a-1d63-4841-b0c6-04e92216406a" />
+	<api-gateway:autodiscovery apiId="16099681" doc:name="API Autodiscovery" doc:id="52e809a7-13d1-4cb0-ad1b-ac4877be2bcc" flowRef="phone-validator-main" />
+
+</mule>

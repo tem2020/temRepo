@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="a25d0476-c065-46b5-97ed-6882c5d67f9e">
+		<http:listener-connection host="0.0.0.0" port="8082" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="41fa9d4c-fe04-4d39-9b38-49cfbeb59290" basePath="/api/validate">
+		<http:request-connection host="apilayer.net" />
+	</http:request-config>
+	<validation:config name="Validation_Config" doc:name="Validation Config" doc:id="10d88326-3326-47d4-b936-65bdf5a9e6f0"/>
+	<flow name="phone_validator" doc:id="00ff8a57-738a-4b14-af2d-cc30229b4b91" >
+		<http:listener doc:name="Listener" doc:id="6bb81dfd-3b91-4ed6-9682-3fb8e89d47fd" config-ref="HTTP_Listener_config" path="/validate"/>
+		<validation:matches-regex doc:name="Matches regex" doc:id="bfbd9bbf-0e6e-4b93-b78a-3884f940dce8" config-ref="Validation_Config" value="#[attributes.queryParams.number]" regex="^[0-9]{11}$"/>
+		<http:request method="GET" doc:name="Request" doc:id="20017eb9-6757-40b3-8c3b-39247e4abb84" config-ref="HTTP_Request_configuration" url="http://apilayer.net/api/validate?access_key=3a9d0d5c598b5fad9d610916a5c7c521">
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	number : attributes.queryParams.number
+}]]]></http:query-params>
+		</http:request>
+		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="9bd93084-58aa-4e46-8d18-3f069f8f276c" />
+		<logger level="INFO" doc:name="last_Logger" doc:id="7ac3dc52-ccc0-4888-b317-efec3636e2d7" message="#[payload]" />
+	</flow>
+</mule>

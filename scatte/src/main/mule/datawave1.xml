@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="ce8ad051-6062-41a8-a84e-605377cde9ee" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="8b719843-f235-4ccf-87a6-b650690be9e9" >
+		<db:my-sql-connection host="localhost" port="3306" database="test" />
+	</db:config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="7787d420-7eda-447f-925f-4e05e63d127e" >
+		<http:request-connection port="8081" />
+	</http:request-config>
+	<flow name="datawave1Flow" doc:id="a550a2a8-2321-48fc-801b-5666f56c98b7" >
+		<http:listener doc:name="Listener" doc:id="3f60e941-08b2-49bf-9463-7958cc67a50a" config-ref="HTTP_Listener_config" path="/cond"/><db:insert doc:name="Insert" doc:id="b0d2001d-c111-4f9c-8f8c-eb36b9bd6d08" config-ref="Database_Config">
+			<db:sql >select from</db:sql>
+		</db:insert>
+		<db:select doc:name="Select" doc:id="e9f303a8-634d-4a6b-a48b-433901d138ba" config-ref="Database_Config">
+			<db:sql >select * from student</db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="bf0f0e18-f18d-4a44-9bfd-9bba53921e19" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="e6388ddd-90b4-4bd3-ba0f-5a9752eb568e" message="#[payload]"/><ee:transform doc:name="Transform Message" doc:id="64874f24-c244-412b-9da2-019fd0834f02" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+
+output application/json
+
+var country = attributes.queryParams.country
+
+var firstname = "temesgen"
+var lastname = "arage"
+
+fun username()= "user name is: *" ++ firstname ++ " " ++ lastname
+---
+if(country == "ethiopia")
+
+	{
+		currency: "Birr"
+	}
+else if(country == "USA")
+	{
+		curren: "Dollar"
+	}
+else if(country == "china")
+	{
+		currency: "yuan"
+	}
+else
+	{
+		country: " not found"
+	}
+
+	
+	]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<ee:transform doc:name="Transform Message" doc:id="a61b91ad-fc40-4e8c-8179-7fa5b6840dc1" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+
+output application/json
+
+var country = attributes.queryParams.country
+
+var firstname = "Temesgen"
+var lastname = "arage"
+
+fun username()= "user name is: " ++ firstname ++ " " ++ lastname
+---
+username()
+	
+	]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="datawave1Flow1" doc:id="a5bfee1c-dd7e-4d09-a534-4e7640f0b1c2" >
+		<http:listener doc:name="Listener" doc:id="3e393059-d0af-4537-bb0d-11a7c588746a" config-ref="HTTP_Listener_config" path="tran2"/>
+		<ee:transform doc:name="Transform Message" doc:id="1cb2c5a1-5437-4997-a36a-7fd44a6c3718" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+---
+userinfo: payload.*user[1] ++ payload.*user[0]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<ee:transform doc:name="Transform Message" doc:id="5af46a3e-f609-469e-9054-2659a4efe6c0" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+var array1 =[1,2,3]
+var array2 =[4,5,6]
+var array3 =[7,8,9]
+var arrays = [array1,array2,array3]
+---
+//[9,2,3,5,6] filter (value, index) -> (value > 2)
+//["bond", "james", "peter"] find "james"
+//myarray groupby (item) -> item language
+
+["jose", "pedro", "mateo"] map (value, index) -> { (index) : value}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform> -->
+	</flow>
+	<flow name="datawave1Flow3" doc:id="ecdcd0f5-7002-4a5c-8504-63884d73bcea" >
+		<http:listener doc:name="Listener" doc:id="e2a37961-4b26-47c0-bb63-8ca9d8b62591" config-ref="HTTP_Listener_config" path="/choice"/>
+		<choice doc:name="Choice" doc:id="ce439e4d-2b8b-44a4-9c53-af887e4db111" >
+			<when expression='#[attributes.queryParams.lang == "Amharic"]'>
+				<set-payload value="selam" doc:name="Set Payload" doc:id="1a8f358d-44e1-43a6-a4b5-3820bf9480ac" />
+			</when>
+			<when expression='#[attributes.queryParams.lang=="french"]'>
+				<set-payload value="Bonjure" doc:name="Set Payload" doc:id="568789a7-c0af-4aea-86a0-4d6d0dc87d3b" />
+			</when>
+			<otherwise >
+				<set-payload value="Hello" doc:name="Set Payload" doc:id="0af3dfdd-9387-47bd-9080-ab8b46970240" />
+			</otherwise>
+		</choice>
+	</flow>
+	<flow name="datawa" doc:id="b48381e1-e802-4a85-ae75-5719fb30b8f0" >
+		<http:listener doc:name="Listener" doc:id="7ddc4d2c-a2dd-449b-8c1e-60ad7b51398f" config-ref="HTTP_Listener_config" path="/update"/>
+		<db:update doc:name="Update" doc:id="9b6da2bc-f2e7-44f6-aded-cd9c6467a6d4" config-ref="Database_Config">
+			<db:sql >UPDATE student 
+SET fname ='Tom', lname ='John' 
+WHERE id = '1';</db:sql>
+		</db:update>
+		<ee:transform doc:name="Transform Message" doc:id="97dc8fdf-d6fa-45d5-a9d0-ab8ae5726329" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "updated"
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="83bb8abb-d1a7-4d97-bd02-2ac64bb5a588" message="#[payload]"/>
+	</flow>
+	<flow name="datawave1Flow2" doc:id="0365b69c-3918-4d17-a967-6f93381da796" >
+		<http:listener doc:name="Listener" doc:id="ebf5a1fe-8bad-4bd0-923d-1e6793b07b2b" config-ref="HTTP_Listener_config" path="/delete"/>
+		<db:delete doc:name="Delete" doc:id="26f2a34b-14d7-40b0-8a55-ff6ddf646175" config-ref="Database_Config">
+			<db:sql >delete from student
+where id = 2;</db:sql>
+		</db:delete>
+		<ee:transform doc:name="Transform Message" doc:id="b7e43d01-18b6-4f03-8502-0045cfa99635" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "deleted"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="0d154eb1-8cf4-4408-9b5e-6af776a71268" message="#[payload]"/>
+	</flow>
+	<flow name="datawave1Flow4" doc:id="d296d829-c788-4d1e-b112-6b7a0ffe2656" >
+		<http:listener doc:name="Listener" doc:id="c1d579e3-93e7-4935-812c-02a3bec92278" config-ref="HTTP_Listener_config" path="/action"/>
+		<choice doc:name="Choice" doc:id="f1dac478-3ad1-4d5f-a9b9-507a3663785e" >
+			<when expression='#[attributes.queryParams.Name=="select"]'>
+				<set-payload value="select statement" doc:name="Set Payload" doc:id="17974dad-e571-4089-8946-f5e03007c11f" />
+				<db:select doc:name="Select" doc:id="40f7e3d7-1aa2-470a-9782-871db6829aab" config-ref="Database_Config">
+					<db:sql >select * from student</db:sql>
+				</db:select>
+				<ee:transform doc:name="Transform Message" doc:id="8bb049b2-ca13-4bc1-bd90-4d9f2e37f914" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+//{
+//	message: "Select statement performed "
+//}
+payload]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="Logger" doc:id="74228fbc-7bc9-40eb-bd7a-a5d34d250a13" message="#[payload]" />
+			</when>
+			<when expression='#[attributes.queryParams.Name=="create"]'>
+				<set-payload doc:name="Set Payload" doc:id="4ac62044-4f08-4e73-a498-05cf97f9b53f" value="create statement"/>
+				<db:insert doc:name="Insert" doc:id="22c5dcc7-1fe1-43b9-af2f-e647a99344d8" config-ref="Database_Config">
+					<db:sql >INSERT INTO `student`(`id`, `fname`, `lname`, `age`, `email`) 
+VALUES ('1','Tem','A',32,'temimar@gmail.com')</db:sql>
+				</db:insert>
+				<ee:transform doc:name="Transform Message" doc:id="b81a01dc-f2a0-47c4-b0c3-845db6e6baec" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "successfully created"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="Logger" doc:id="c6c48869-4b9c-4b68-a88f-420c45bc3595" message="#[payload]"/>
+			</when>
+			<when expression='#[attributes.queryParams.Name=="update"]'>
+				<set-payload value="Update statement" doc:name="Set Payload" doc:id="997a0455-3e93-459f-9260-4fa209b876bc" />
+				<db:update doc:name="Update" doc:id="7c94f645-63c5-4423-88a4-c3da5c1ac02f" config-ref="Database_Config">
+					<db:sql >update student 
+SET id = '3'
+where fname = 'Alemu';</db:sql>
+				</db:update>
+				<ee:transform doc:name="Transform Message" doc:id="356813f4-3f06-4120-b21d-45e68e29512a" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "updated successfully"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="Logger" doc:id="a863b8ae-1005-4009-aad3-e8506b7ae85a" message="#[payload]"/>
+			</when>
+			<otherwise >
+				<set-payload value="choice is not working" doc:name="Set Payload" doc:id="104c8503-0604-4201-8755-1338014537ca" />
+			</otherwise>
+		</choice>
+	</flow>
+	<flow name="flow_reference" doc:id="7c5348a6-a058-4afc-8603-bfb6d951fde4" >
+		<http:listener doc:name="Listener" doc:id="406c67d0-1e47-4cdb-a075-f2a62a50b51a" config-ref="HTTP_Listener_config" path="flowref"/>
+	</flow>
+	<flow name="datawave1Flow5" doc:id="d8159a92-a73e-42cd-bc6f-b6ae264e43a2" >
+		<http:listener doc:name="Listener" doc:id="0a376325-154a-4550-aa40-54cbde11e1d9" config-ref="HTTP_Listener_config" path="/scatter"/>
+		<scatter-gather doc:name="Scatter-Gather" doc:id="d949b5e6-58a9-4a17-ba44-8003c7f2da26" >
+			<route >
+				<flow-ref doc:name="Flow Reference" doc:id="2e4586af-8f98-4a98-84b8-5adedb2c1f8e" name="selectEmp"/>
+			</route>
+			<route >
+				<flow-ref doc:name="Flow Reference" doc:id="6497669c-0e47-4cc1-9f5d-66f121caad5f" name="getCustomer"/>
+			</route>
+			<route >
+				<flow-ref doc:name="Flow Reference" doc:id="52a3629b-3278-425e-a848-aceb15d8e494" name="getCustomer"/>
+			</route>
+		</scatter-gather>
+		<ee:transform doc:name="Transform Message" doc:id="b19e6510-672c-4329-84f2-e7cd05c965d8">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+flatten(payload..payload)]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+	</flow>
+	<flow name="selectEmp" doc:id="6f1c0ac6-5df5-4a0c-8ef7-104f4c89f57a" >
+		<db:select doc:name="Select" doc:id="ebd8ab86-44ff-400f-ad94-1309a446a018" config-ref="Database_Config">
+			<db:sql >select * from employee</db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="98ce9ec4-2005-4f2b-9a78-eeb476b68d9c" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+---
+employee:{
+	(payload)
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="getCustomer" doc:id="8a2e0f56-ef18-471e-b336-5ca715e2b380" >
+		<http:request method="GET" doc:name="Request" doc:id="4e78e921-863f-491e-a622-0a82e97afaa4" config-ref="HTTP_Request_configuration" path="/getCustomer"/>
+	</flow>
+	<flow name="datawave1Flow7" doc:id="f9b6ffc2-fc62-46be-afa4-adad23ace6fd" >
+		<http:listener doc:name="Listener" doc:id="a8e3fe2f-d418-429f-a2c4-7195644a95d1" config-ref="HTTP_Listener_config" path="/getCustomer"/>
+		<db:select doc:name="Select" doc:id="b5f05eae-0e61-43fe-ae7a-7f5f4abd7c23" config-ref="Database_Config">
+			<db:sql >select * from customer</db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="d8c219e6-5a18-4da5-8619-7fe6ab6cc06a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="read" doc:id="9d59cf1c-5ccf-4586-9e08-6cc017438db6" >
+		<file:read doc:name="Read" doc:id="9d19593c-8244-49ea-b913-2bb54612f0d8" path="C:\Users\temilla\Desktop\user.json"/>
+	</flow>
+</mule>

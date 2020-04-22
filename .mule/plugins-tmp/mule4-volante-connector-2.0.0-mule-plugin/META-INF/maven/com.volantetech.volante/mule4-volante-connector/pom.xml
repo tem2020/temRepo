@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.volantetech.volante</groupId>
+    <artifactId>mule4-volante-connector</artifactId>
+    <version>2.0.0</version>
+
+    <packaging>mule-extension</packaging>
+    <name>Mule Volante Anypoint Connector</name>
+
+    <parent>
+        <groupId>org.mule.connectors</groupId>
+        <artifactId>mule-certified-parent</artifactId>
+        <version>1.2.2</version>
+    </parent>
+
+    <properties>
+        <volante.version>5.4.2</volante.version>
+        <licensePath>LICENSE.md</licensePath>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <configuration>
+                    <header>LICENSE_HEADER.txt</header>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>2.5.2</version>
+            </plugin>
+            <plugin>
+	            <groupId>org.mule.tools.maven</groupId>
+	            <artifactId>mule-app-maven-plugin</artifactId>
+	            <version>1.7</version>
+	            <extensions>true</extensions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>2.5.2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.2</version>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.volantetech.volante</groupId>
+            <artifactId>volante-core</artifactId>
+            <version>${volante.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.volantetech.volante</groupId>
+            <artifactId>volante-utils</artifactId>
+            <version>${volante.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.volantetech.volante.cartridge</groupId>
+            <artifactId>Cartridge-Order-Test</artifactId>
+            <version>1.0</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <repositories>
+		<repository>
+            <id>mule-releases</id>
+            <name>Mule Release Repository</name>
+            <url>https://repository-master.mulesoft.org/nexus/content/repositories/releases</url>
+        </repository>
+    </repositories>
+
+    <scm>
+        <connection>scm:git:ssh://connectors_cert_ci@bitbucket.org/designer_core_team/volanteconnector.git</connection>
+        <developerConnection>scm:git:ssh://designer_core_team@bitbucket.org/designer_core_team/volanteconnector.git</developerConnection>
+        <url>https://bitbucket.org/designer_core_team/volanteconnector.git</url>
+		<tag>volante-mule-2.0.0</tag>
+    </scm>
+</project>

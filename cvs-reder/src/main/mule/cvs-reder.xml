@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="f50eef94-984d-4fe5-b1e4-528b0c72f87c" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<file:config name="File_Config" doc:name="File Config" doc:id="333ffa5a-27dc-42ee-a787-e1d43ca12edf" />
+	<flow name="cvs-rederFlow" doc:id="ffc69913-7775-44ee-add6-f0fabd19c7ef" >
+		<http:listener doc:name="Listener" doc:id="f7805348-9056-485e-bf16-1a2a8dc2ab28" config-ref="HTTP_Listener_config" path="read"/>
+		<file:read doc:name="Read" doc:id="8d779c14-3291-45dc-9cfa-b34b2dd3ada0" config-ref="File_Config" path="C:\Users\temilla\Desktop\File\FL_insurance_sample.csv"/>
+		<ee:transform doc:name="Transform Message" doc:id="dfe08720-6cf5-48c5-a42f-768123c20c0d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="cd953244-5b02-4642-b1a6-c53fae6072e9" message="#[payload]"/>
+	</flow>
+</mule>

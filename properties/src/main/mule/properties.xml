@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="56d7ab87-635b-473e-aa6e-9641789b2b5b" >
+		<db:my-sql-connection host="${db.host}" port="${db.port}" user="${db.username}" database="${db.name}" />
+	</db:config>
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="02b546ce-de59-4090-92d1-830b142dbc09">
+		<http:listener-connection host="0.0.0.0" port="${http.port}" />
+	</http:listener-config>
+	<configuration-properties doc:name="Configuration properties" doc:id="1423d2cb-0f73-4de8-ae21-66ee19e19916" file="local.properties" />
+	<flow name="propertiesFlow" doc:id="5576fd48-d26b-4acd-9808-11c660c4be13" >
+		<http:listener doc:name="Listener" doc:id="e105def4-aee0-4828-9838-69f6fe3c10b5" path="/${http.path}" config-ref="HTTP_Listener_config"/>
+		<db:select doc:name="Select" doc:id="8bfaa072-58df-4f50-b9a7-7e9c98632d60" config-ref="Database_Config">
+			<db:sql >select * from employee</db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="fba44653-0d6f-4315-b083-1b786a112338" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="propertiesFlow1" doc:id="c97e90f1-c56d-4ed4-b034-f1b8864d7234" >
+		<scatter-gather doc:name="Scatter-Gather" doc:id="6d865788-8af7-453c-b266-f76161cb03fe"/>
+	</flow>
+</mule>

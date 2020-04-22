@@ -1,0 +1,5 @@
+authenticated.users=[{"id"\:"fee5cea8-c85a-4173-b597-8a713ae8508e","token"\:"09f4865c-a279-4e39-92e3-da32d854c44b","userId"\:"temilla18","refreshToken"\:"","baseUrl"\:"https\://anypoint.mulesoft.com/"},{"id"\:"f8870173-4673-4623-b6f3-5b99fc1e919f","token"\:"b8089132-c348-45ad-bb37-5191cdef1dcf","userId"\:"temilla19","refreshToken"\:"","baseUrl"\:"https\://anypoint.mulesoft.com/"}]
+current.token=b8089132-c348-45ad-bb37-5191cdef1dcf
+current.user=temilla19
+eclipse.preferences.version=1
+expiration.time=90

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="956e53e7-5485-4e4e-95c5-018b7475d13f" >
+		<http:request-connection host="localhost" port="8081" />
+	</http:request-config>
+	<flow name="until_successfulFlow" doc:id="02490e13-131d-443a-ad68-35c3b47f2541" >
+		<http:listener doc:name="Listener" doc:id="0f84690b-2b1b-460e-8793-54c22865a0d3" config-ref="HTTP_Listener_config" path="/until"/>
+		<until-successful maxRetries="5" doc:name="Until Successful" doc:id="3bd1f272-3535-426b-a164-739d99639451" millisBetweenRetries="2000">
+			<http:request method="GET" doc:name="Request" doc:id="e0d3da33-29ac-49d0-bd1d-e7b15644c7b2" config-ref="HTTP_Request_configuration" path="/demo"/>
+		</until-successful>
+	</flow>
+	<flow name="smplApi" doc:id="5b47bd2e-c937-4d93-a073-cb50bf9c7b9d" >
+		<http:listener doc:name="Listener" doc:id="4811c168-0de4-4e21-817d-a1f574ca5e0c" config-ref="HTTP_Listener_config" path="/demos"/>
+		<set-payload value="hello world" doc:name="Set Payload" doc:id="da263e5c-e93d-4e31-9a93-260ba4267f30" />
+	</flow>
+</mule>

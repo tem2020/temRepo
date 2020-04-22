@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="2c20c0fe-1854-4fac-8e2b-ff1af600e67d" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="transformFlow" doc:id="74eae12b-f723-431c-ab6b-a017174c8f4b" >
+		<http:listener doc:name="Listener" doc:id="525c39e4-8aa8-4d36-a469-7695ce55df0e" config-ref="HTTP_Listener_config" path="/vars"/>
+		 <set-variable value='#["Name "++ attributes.queryParams.name ++"      Age " ++ attributes.queryParams.age]' doc:name="Set Variable" doc:id="f853fdbb-235a-4202-babc-68bc1c2e1046" variableName="myvar"/>
+		<set-payload value='#[payload]' doc:name="Set Payload" doc:id="b963195e-f297-4361-8012-f7b8cb46236e" />
+		 <!-- <remove-variable doc:name="Remove Variable" doc:id="ad470b13-b1dd-428a-9679-8ac6e44eaa30" variableName="myvar"/>
+		  --><logger level="INFO" doc:name="Logger" doc:id="899948a8-04a6-4d2e-be85-53be14bafc90" message="#[payload]"/>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="9f494f74-5fd6-4b44-a040-e2fade8f2b55" />
+		</error-handler>
+	</flow>
+	
+	
+</mule>

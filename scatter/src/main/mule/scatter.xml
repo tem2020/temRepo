@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="3803d098-530f-4d6c-8892-f258995e5e56" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="9a0752e8-0ee2-4c82-9167-6584660290cd" >
+		<http:request-connection host="localhost" port="8081" />
+	</http:request-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="bb1d56bc-4ff3-4fe1-af93-89bc2f506e03" >
+		<db:my-sql-connection host="localhost" port="3306" user="root" database="test" />
+	</db:config>
+	<flow name="scatterFlow" doc:id="39c4c94d-91d4-4009-b5f3-e98045d1cd34" >
+		<http:listener doc:name="Listener" doc:id="8188c8a0-1977-4568-8fca-873b49175aba" config-ref="HTTP_Listener_config" path="/scatter1"/>
+		<scatter-gather doc:name="Scatter-Gather" doc:id="58cdb5fa-8daa-4cc2-84ee-06bfd7f6b17f" >
+			<route >
+				<flow-ref doc:name="Flow Reference" doc:id="8dec4d2f-5ece-45f4-bd55-81737a4a3788" name="getCustomer"/>
+			</route>
+			<route >
+				<flow-ref doc:name="Flow Reference" doc:id="7b678788-db1f-41e0-9594-fd6d9c5e5e00" name="getCustomer"/>
+			</route>
+			<route >
+				<flow-ref doc:name="Flow Reference" doc:id="245bb678-72b0-4fc4-9e4a-044d0930a66a" name="read"/>
+			</route>
+		</scatter-gather>
+		<ee:transform doc:name="Transform Message" doc:id="94c48022-42d2-4bb6-aef4-d03ab7170b29" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+flatten(payload..payload)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="a2d2ce7d-709a-4946-a363-ffbfc5c0a835" message="#[payload]"/>
+	</flow>
+	<flow name="getCustomer" doc:id="cb0edf3c-a094-442b-ad94-31e9f71ca91f" >
+		<http:listener doc:name="Listener" doc:id="2a31e396-994a-43ce-90ba-504d240b1dbf" config-ref="HTTP_Listener_config" path="/getCust"/>
+		<db:select doc:name="Select" doc:id="5be66e8a-c762-4218-a70d-cf4bbd4d9cde" config-ref="Database_Config">
+			<db:sql >select * from customer</db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="687d8d02-653c-40be-8375-c12deb55abf3" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+---
+customers:{
+	(payload)
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="getEmp" doc:id="e12d52f0-d643-4580-bf5a-99f5b9ce15a9" >
+		<db:select doc:name="Select" doc:id="ab3be72a-eb83-4acf-94e4-dcd5c1a85233" config-ref="Database_Config">
+			<db:sql >select * from employee</db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="6b06cb1e-6b87-45c9-baa0-d0677b5864b8" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="read" doc:id="6773d50f-8cdf-4882-af0d-a9636c9eaf5d" >
+		<file:read doc:name="Read" doc:id="701c4252-a780-467b-b65a-9000b0fdcc22" path="C:\Users\temilla\Desktop\user.json"/>
+	</flow>
+	
+</mule>

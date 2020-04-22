@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:email="http://www.mulesoft.org/schema/mule/email" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+<flow name="send-email" doc:id="767e3879-9518-4577-aa1c-4ce01f671ef7" >
+		<http:listener doc:name="Listener" doc:id="9ca1879f-6bb6-4330-8b02-3ac923247701" path="/email" config-ref="HTTP_Listener_config"/>
+		<email:send doc:name="Send" doc:id="ca5fbfa3-d639-4722-96a1-2fc50d29e452" config-ref="Email_SMTP" fromAddress="temimar@gmail.com">
+			<email:to-addresses >
+				<email:to-address value="dtemesgen17@gmail.com" />
+			</email:to-addresses>
+		</email:send>
+		<set-payload value="email from" doc:name="Set Payload" doc:id="4d84b5e7-a89d-4694-8948-abd22fa7da0d" />
+	</flow>
+	<flow name="emailFlow" doc:id="486da296-9744-4fe6-a545-2a0ee7e72f9b" >
+		<http:listener doc:name="Listener" doc:id="f607b23a-198b-43cf-9734-1cb84c6f9419" config-ref="HTTP_Listener_config"/>
+		<ee:transform doc:name="Transform Message" doc:id="f6ef616c-734b-42ef-ad38-b266650ce1b4" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	
+</mule>

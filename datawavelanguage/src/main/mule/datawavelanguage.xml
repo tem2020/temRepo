@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="bb82a9b7-1165-4fa6-ae99-135212a458fd" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="filter" doc:id="dd2ddfec-f282-4a07-a039-2f0ffab163ac" >
+		<ee:transform doc:name="Transform Message" doc:id="2b6f60f2-19b1-4a41-9292-2d47a1f3f14c" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+
+[9,2,3,5,1] filter (item, index) -> (item> 5 )]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="groupBy" doc:id="0d3e2c23-5893-4a00-b37c-e57e4ea30135" >
+		<ee:transform doc:name="Transform Message" doc:id="ea010620-209f-4a3a-8a48-e7899e048e69" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+var  myArray = [
+	{"name": "Foo", 	"Language": "java"},
+	{"name": "Foo", 	"language": "Scale"},
+	{"name": "FooBar", 	"language": "java"}
+]
+---
+
+//myArray groupBy (item) -> item.Language
+myArray groupBy (item) -> item.name]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="decimals" doc:id="3aa6f8b0-5a1a-4ffa-afd6-d56ac8e8701b" >
+		<ee:transform doc:name="Transform Message" doc:id="ecf73269-1a17-42d8-a4e2-db0e7d8a89e4" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+
+fun myEmpty() = [isEmpty("")]
+fun oddchecker() = [isOdd(4)]
+fun myArraySize()=["1","12","564"]
+---
+//[isDecimal(1.2),isDecimal(2),isDecimal("10.000001")]
+//myEmpty()
+//oddchecker()
+array_size: sizeOf(myArraySize())
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="arrayOfArrays" doc:id="f99a9d87-1968-4618-beb1-16d585aacc26" >
+		<ee:transform doc:name="Transform Message" doc:id="26c8a231-d386-490d-946e-d8fd8e37f473" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+var array1 = [1,2,3]
+var array2 = [4,5,6]
+var array3 = [7,8,9]
+var arrayOfArrays = [array1, array2, array3]
+---
+arrayOfArrays]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="datawavelanguageFlow" doc:id="80396fbf-dd19-4527-a678-c1d6b3fae590" >
+		<ee:transform doc:name="Transform Message" doc:id="f5dc2f6d-7397-418f-b78a-a1c554952cfc" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+
+---
+payload reduce ($ ++ $$)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	
+	
+
+</mule>

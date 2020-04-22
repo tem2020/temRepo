@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="userCSV" format="csv">
+      <types:shape format="weave" example="examples/user.csv"><![CDATA[%dw 2.0
+
+type userCSV = Array<{|  id: String,   fname: String,   lname: String,   address: String,   email: String|}>
+
+]]></types:shape>
+      <types:properties>
+        <types:property name="headerLineNumber" value="0"/>
+        <types:property name="header" value="true"/>
+        <types:property name="isQuotedString" value="false"/>
+        <types:property name="separator" value=","/>
+      </types:properties>
+    </types:type>
+    <types:type name="usersxml" format="xml">
+      <types:example format="xml" element="users" location="examples/users.xml"/>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#3553d158-f628-4530-b82e-994695adf26e">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="userCSV"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#4790d1fa-5dd8-4227-99be-47402940866c">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="usersxml"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="userCSV"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>

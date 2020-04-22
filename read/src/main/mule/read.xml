@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="94164dc7-80ef-45b3-8abd-7e3ab342a28a" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<file:config name="File_Config" doc:name="File Config" doc:id="5bb87597-d254-4b74-bc1b-6ab3b3cda094" />
+	<flow name="readFlow" doc:id="b5e81b2c-3010-4933-b23f-15398d568741" >
+		<http:listener doc:name="Listener" doc:id="1467c4f3-95a5-48f2-9399-0d3cab803eec" config-ref="HTTP_Listener_config" path="/read"/>
+		<file:read doc:name="Read" doc:id="a4605c0e-8b0c-49fb-9cec-12ff758d4854" config-ref="File_Config" path="C:\Users\temilla\Desktop\File\test.txt"/>
+		<ee:transform doc:name="Transform Message" doc:id="ca3cb79a-7791-4d66-aa1b-40ace7da7045" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="readFlow1" doc:id="60fc5289-386a-4fbf-988f-7812fa7e8bfd" >
+		<ee:transform doc:name="Transform Message" doc:id="5c1b6f40-be16-4cfd-85b7-ffe4b42566c5" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+	firstname: payload.'first_name',
+	
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

@@ -1,0 +1,11 @@
+{
+  "sampleData": {
+    "491f0961-8679-479b-8cb6-6f868eb2c382": {
+      "payload": "sample_data/unknown.dwl",
+      "vars-myvar": "sample_data/unknown_1.dwl"
+    },
+    "13ece1d6-bfe5-44d6-9cc5-adef640232a9": {
+      "payload": "sample_data/unknown_2.dwl"
+    }
+  }
+}

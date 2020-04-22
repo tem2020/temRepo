@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="99e0d5bf-f140-4a9f-b6b5-b7ff1c6f01ec" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="firstsuccessfulFlow" doc:id="f1e7e559-6378-416b-b5d3-5296c040f196" >
+		<http:listener doc:name="Listener" doc:id="02132ad7-3388-4509-a99c-2726f58c3328" config-ref="HTTP_Listener_config" path="first"/>
+		<first-successful doc:name="First Successful" doc:id="dfa22b4f-254d-4429-8371-121bc387c43e" >
+			<route >
+				<flow-ref doc:name="Flow Reference" doc:id="dcf9119c-0944-482e-9c1a-5de0f0f1d163" name="firstsuccessfulFlow1"/>
+			</route>
+			<route >
+				<flow-ref doc:name="Flow Reference" doc:id="d520430c-870b-4881-b970-c89eff93bed3" name="firstsuccessfulFlow2"/>
+			</route>
+		</first-successful>
+	</flow>
+	<flow name="firstsuccessfulFlow1" doc:id="66ddb85c-1935-4c70-893a-850950f37bb1" >
+		<http:listener doc:name="Listener" doc:id="e1132162-a89d-41ab-bab9-d0503642a26c" config-ref="HTTP_Listener_config" path="/subf1"/>
+		<set-variable value="" doc:name="Set Variable" doc:id="6e7aad65-2112-4dd7-a47c-7d8b5f52a1db" variableName="var1"/>
+		<set-payload value="#[vars.varla]" doc:name="Set Payload" doc:id="2b06bfdc-353e-4d27-bbdd-054768dc59e7" />
+		<logger level="INFO" doc:name="Logger" doc:id="f2eff8ec-8dab-4eb8-9fa4-5aa8ff3bc262" message="excuted"/>
+	</flow>
+	<flow name="firstsuccessfulFlow2" doc:id="bacc82bc-7234-4f77-a6bc-4cf288b35859" >
+		<http:listener doc:name="Listener" doc:id="8c0b3dde-fb63-4734-b356-d467c7ad76c1" config-ref="HTTP_Listener_config" path="/subf2"/>
+		<set-payload value="second flow" doc:name="Set Payload" doc:id="24fb6c26-c59a-4d8a-9672-ffa7b9f935a6" />
+		<logger level="INFO" doc:name="Logger" doc:id="781f07ae-d12a-4fb5-9d22-0263fb6ced18" message="excuted"/>
+	</flow>
+</mule>

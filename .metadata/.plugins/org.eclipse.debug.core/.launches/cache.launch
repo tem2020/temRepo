@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.jdt.munit.launchconfig">
+<stringAttribute key="clear_data" value="NEVER"/>
+<stringAttribute key="launch_mule_server_version" value="org.mule.tooling.server.4.2.2.ee"/>
+<listAttribute key="mule-project-names">
+<listEntry value="cache"/>
+</listAttribute>
+<stringAttribute key="mule_runtime_version" value="4.2.2"/>
+<booleanAttribute key="munit_run" value="true"/>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/cache"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="4"/>
+</listAttribute>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="cache"/>
+<intAttribute key="remote-debug-max-stream-size" value="2"/>
+<intAttribute key="remote-debug-port" value="6666"/>
+<booleanAttribute key="remote-debug-suspend" value="true"/>
+<booleanAttribute key="run_coverage" value="true"/>
+<setAttribute key="test_names"/>
+<setAttribute key="test_resources">
+<setEntry value="cache-test-suite.xml"/>
+</setAttribute>
+</launchConfiguration>

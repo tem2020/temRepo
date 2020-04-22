@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="payload" format="java">
+      <types:shape format="raml"><![CDATA[#%RAML 1.0 DataType
+type: string]]></types:shape>
+    </types:type>
+    <types:type name="phone" format="json">
+      <types:shape format="weave" example="examples/phone-2.json"><![CDATA[%dw 2.0
+
+type phone = Array<{|  valid: Boolean,   number: String,   local_format: String,   international_format: String,   country_prefix: String,   country_code: String,   country_name: String,   location: String,   carrier: String,   line_type: String|}> {"example": "[{\\\"valid\\\":true,\\\"number\\\":\\\"12024682599\\\",\\\"local_format\\\":\\\"2024682599\\\",\\\"international_format\\\":\\\"+12024682599\\\",\\\"country_prefix\\\":\\\"+1\\\",\\\"country_code\\\":\\\"US\\\",\\\"country_name\\\":\\\"United States of America\\\",\\\"location\\\":\\\"Wshngtnzn1\\\",\\\"carrier\\\":\\\"T-Mobile USA Inc.\\\",\\\"line_type\\\":\\\"mobile\\\"},{\\\"valid\\\":true,\\\"number\\\":\\\"12024682599\\\",\\\"local_format\\\":\\\"2024682599\\\",\\\"international_format\\\":\\\"+12024682599\\\",\\\"country_prefix\\\":\\\"+1\\\",\\\"country_code\\\":\\\"US\\\",\\\"country_name\\\":\\\"United States of America\\\",\\\"location\\\":\\\"Wshngtnzn1\\\",\\\"carrier\\\":\\\"T-Mobile USA Inc.\\\",\\\"line_type\\\":\\\"mobile\\\"},{\\\"valid\\\":true,\\\"number\\\":\\\"12024682599\\\",\\\"local_format\\\":\\\"2024682599\\\",\\\"international_format\\\":\\\"+12024682599\\\",\\\"country_prefix\\\":\\\"+1\\\",\\\"country_code\\\":\\\"US\\\",\\\"country_name\\\":\\\"United States of America\\\",\\\"location\\\":\\\"Wshngtnzn1\\\",\\\"carrier\\\":\\\"T-Mobile USA Inc.\\\",\\\"line_type\\\":\\\"mobile\\\"}]"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#13ece1d6-bfe5-44d6-9cc5-adef640232a9">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="phone"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="phone"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>

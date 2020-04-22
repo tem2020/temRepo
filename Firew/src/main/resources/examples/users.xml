@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<users>
+  <user>
+    <id>101</id>
+    <fname>Arage</fname>
+    <lname>Temesgen</lname>
+    <address>va</address>
+    <email>temimar@gmail.com</email>
+  </user>
+  <user>
+    <id>101</id>
+    <fname>Abebe</fname>
+    <lname>Kebede</lname>
+    <address>MD</address>
+    <email>abebe@gmail.com</email>
+  </user>
+</users>

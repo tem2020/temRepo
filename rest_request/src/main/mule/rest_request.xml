@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="bc1d0c72-30fb-48a0-9fd2-4e1d0b0d83a9" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<wsc:config name="Web_Service_Consumer_Config" doc:name="Web Service Consumer Config" doc:id="467de7ce-4ef8-4c20-a728-e07b4b9194c8" >
+		<wsc:connection wsdlLocation="http://api.icraftsoft.net:5858/ws/users.wsdl" service="UserPortService" port="UserPortSoap11" address="http://api.icraftsoft.net:5858/ws" />
+	</wsc:config>
+	<flow name="rest_requestFlow" doc:id="3e4b2366-b770-4324-b7ba-cd9514661093" >
+		<http:listener doc:name="getAllUser" doc:id="7435583f-9724-4f10-a32e-7ca39a7d1263" path="/getAllUser" config-ref="HTTP_Listener_config"/>
+		<ee:transform doc:name="Transform Message" doc:id="576c2ae7-ede5-4a4d-862f-f6386e06953a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+ns ns0 http://www.craftsoftware.com/users
+---
+{
+	ns0#GetAllUsersRequest: payload
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<wsc:consume doc:name="Consume" doc:id="27960730-db45-4a03-b141-4f5bcec67b51" config-ref="Web_Service_Consumer_Config" operation="GetAllUsers"/>
+		<ee:transform doc:name="Transform Message" doc:id="39fdd0ea-5711-4653-8157-23f50fdbbc77" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+ns ns0 http://www.craftsoftware.com/users
+---
+payload.body.ns0#GetAllUsersResponse]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="rest_requestFlow1" doc:id="47fb3866-d657-4d0b-9ded-6b4da1afd334" >
+		<http:listener doc:name="Listener" doc:id="cf26446c-f134-4bc7-b569-ae4024331fc6" config-ref="HTTP_Listener_config" path="/getUser"/>
+		<ee:transform doc:name="Transform Message" doc:id="125ee67f-247d-431b-b419-010b19c1255a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+ns ns0 http://www.craftsoftware.com/users
+---
+{
+	ns0#GetUserRequest: {
+		ns0#id: attributes.queryParams.id
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<wsc:consume operation="GetUser" doc:name="Consume" doc:id="6d8e0f3c-7fcd-4ac0-9835-e58057bfd652" config-ref="Web_Service_Consumer_Config"/>
+		<ee:transform doc:name="Transform Message" doc:id="6e5932de-4306-40a4-a2c8-198eed6d6ca3" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+ns ns0 http://www.craftsoftware.com/users
+---
+payload.body.ns0#GetUserResponse]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

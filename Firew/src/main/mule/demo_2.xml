@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="e158ea21-7d4e-44a5-ab99-ecbd66947284" basePath="/{country}">
+		<http:listener-connection host="localhost" port="8081" />
+	</http:listener-config>
+	<flow name="demo_2Flow" doc:id="4dc429c9-1a66-4b55-a65e-0439880446da" >
+		<http:listener doc:name="Listener" doc:id="0ef8c271-6c39-4eaf-9650-6fffab4895dd" config-ref="HTTP_Listener_config" path="/test"/>
+		<set-payload doc:name="Set Payload" doc:id="d7b8057a-d6f9-48aa-a86e-8704d131975c" value="#[(&quot;Hello &quot; ++  (attributes.queryParams.name default &quot;Name&quot;) ++ &quot;, &quot;	++ 
+&quot;welcome to mulesoft, &quot; ++ &quot;today is &quot; ++  (now() as  String {format: 'MM-DD-YYYY'})
+)]"/>
+		<logger level="INFO" doc:name="Logger" doc:id="5cb3fe78-2411-4f46-ad4d-b2a24a07bda2" message="#[payload]"/>
+	</flow>
+	<flow name="demo_2Flow2" doc:id="e9b78a25-5628-4401-999d-433b7c97fee0" >
+		<ee:transform doc:name="Transform Message" doc:id="f15f475e-e999-4871-bab8-5179ea12b09d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="demo_2Flow1" doc:id="33db5683-dd33-4be3-b002-d558c4f29061" >
+		<ee:transform doc:name="CVS to Xml" doc:id="3553d158-f628-4530-b82e-994695adf26e" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+---
+users: {
+user:	payload map (value, index) ->
+ {
+	id: value.id,
+	fname: value.fname,
+	lname: value.lname,
+	address: value.address,
+	email: value.email
+}
+
+}
+
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<ee:transform doc:name="XML to CVS" doc:id="4790d1fa-5dd8-4227-99be-47402940866c" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/csv headerLineNumber = 0 , header = true , separator = ","
+---
+payload.users.*user map ( user , indexOfUser ) -> {
+	id: user.id as String default "NA",
+	fname: user.fname default "",
+	lname: user.lname default "",
+	address: user.address default "",
+	email: user.email default ""
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<!-- <flow name="map" doc:id="703a7298-d99e-4e78-94dc-67f3ae4b3a0d" >
+		<ee:transform doc:name="Transform Message" doc:id="208b7a16-0139-4100-b81a-1a58f5c98935" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+var emp = [
+
+{
+		"id" : "1001",
+		"name" : "Temesgen",
+		"lastName" : "Arage"
+	},
+{
+		"id" : "1002",
+		"name" : "kebede",
+		"lastName" : "baye"
+	},
+{
+		"id" : "1003",
+		"name" : "ababe",
+		"lastName" : "berhe"
+	}
+]
+
+var u = {
+	"id":"123",
+	"name":{
+		"fname": "abebe",
+		"lname": "kebede"
+	}
+}
+-&#45;&#45;
+//emp map{
+//	"id": $.id,
+//	"name": $.name
+//}
+//
+u mapObject ($, $$) ->  {
+	$.
+}]]></ee:set-payload>
+				<ee:set-attributes resource="sampleData.dwl" />
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable resource="sampleVar.dwl" variableName="myvar" />
+			</ee:variables>
+		</ee:transform>
+	</flow> -->
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="2b013e43-3ff5-47c7-b39f-3b58b78de48e" >
+	<http:request-connection host="api.zippopotam.us" port="80"/>
+	</http:request-config>
+	<flow name="zipFinder" doc:id="23efd5f6-5cf8-4866-8ac0-2ca8f406f812" >
+		<http:listener doc:name="Listener" doc:id="63e005f3-2311-4269-86c9-a73c11f38e19" config-ref="HTTP_Listener_config" path="/{postalcode}"/>
+		<http:request method="GET" doc:name="Request" doc:id="bad420a8-c808-4f49-91ba-4cc7080ba419" config-ref="HTTP_Request_configuration" path="/us/{postalcode}">
+			<http:body ><![CDATA[payload]]></http:body>
+		</http:request>
+	</flow>
+
+</mule>	
+

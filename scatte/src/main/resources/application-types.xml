@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="user" format="json">
+      <types:shape format="weave" example="examples/user.json"><![CDATA[%dw 2.0
+
+type user = Array<{|  id: String,   name: String,   lastName: String|}> {"example": "[{\\\"id\\\":\\\"1001\\\",\\\"name\\\":\\\"Temesgen\\\",\\\"lastName\\\":\\\"Arage\\\"},{\\\"id\\\":\\\"1002\\\",\\\"name\\\":\\\"kebede\\\",\\\"lastName\\\":\\\"baye\\\"},{\\\"id\\\":\\\"1003\\\",\\\"name\\\":\\\"ababe\\\",\\\"lastName\\\":\\\"berhe\\\"}]"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="users" format="xml">
+      <types:example format="xml" element="users" location="examples/user.xml"/>
+    </types:type>
+    <types:type name="new" format="json">
+      <types:shape format="weave" example="examples/user1.json"><![CDATA[%dw 2.0
+
+type new = Array<{|  users: {|    user: {|      id: String,       lastName: String,       name: String    |}  |}|}> {"example": "[{\\\"users\\\":{\\\"user\\\":{\\\"id\\\":\\\"1003\\\",\\\"lastName\\\":\\\"Adet\\\",\\\"name\\\":\\\"Temesgen\\\"}}}]"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="userXml" format="xml">
+      <types:example format="xml" element="users" location="examples/user-1.xml"/>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#1cb2c5a1-5437-4997-a36a-7fd44a6c3718">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="new"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:batch="http://www.mulesoft.org/schema/mule/batch"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:email="http://www.mulesoft.org/schema/mule/email" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="48bf01f7-75f4-4f78-81da-0d7766732408" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<email:smtp-config name="Email_SMTP" doc:name="Email SMTP" doc:id="cb4b1487-9f25-4641-b7fc-2cdffe1895bb" >
+		<email:smtp-connection host="smtp.gmail.com" user="temimar@gmail.com" password="4giveme@llmightyG@d" port="587">
+			<email:properties >
+				<email:property key="mail.smtp.starttls.enable" value="true" />
+			</email:properties>
+		</email:smtp-connection>
+	</email:smtp-config>
+	<file:config name="File_Config" doc:name="File Config" doc:id="8b49363b-f6b9-4cae-80c3-80a2d543654f" />
+	<flow name="batch_process2Flow" doc:id="554e08e9-e569-4ab3-9724-b9dec05a965d" >
+		<flow-ref doc:name="Flow Reference" doc:id="46bc04b9-8c2c-4bd7-9c5a-5c0c768a6602" name="bulk-insert"/>
+	</flow>
+	<flow name="bulk-insert" doc:id="46268a45-4ae0-4ba3-95c9-3ed3906692d9" >
+		<file:read doc:name="Read" doc:id="1bac476d-e7de-437e-8c65-404d559a6e70" path="C:\Users\temilla\Desktop\File\sampleData.csv" config-ref="File_Config" />
+		<ee:transform doc:name="Transform Message" doc:id="9063873d-e8e2-4cf2-be9b-519f09bf891f">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<batch:job jobName="batch_process2Batch_Job" doc:id="f6a467de-2622-4387-b9c4-cc53cf4286a8" >
+			<batch:process-records >
+				<batch:step name="Batch_Step" doc:id="5f2f5b43-8962-4afb-b187-cab90f7729c5" >
+					<ee:transform doc:name="Transform Message" doc:id="5af89804-0362-4573-b975-6be8683a3718" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+	
+}]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+					<batch:aggregator doc:name="Batch Aggregator" doc:id="be28cefa-c767-4927-9ed4-fc37de4ea787" size="10">
+						<file:write doc:name="Write" doc:id="3686d5f2-5797-4c5c-8e48-e6eb9f5caf33" config-ref="File_Config" path="C:\Users\temilla\Desktop\File\iserted_data.txt" mode="APPEND"/>
+					</batch:aggregator>
+				</batch:step>
+				<flow-ref doc:name="data-failed-processing" doc:id="e8f99238-eb67-473d-a0bb-a36864088e1a" name="data-failed-processing"/>
+			</batch:process-records>
+		</batch:job>
+	</flow>
+	<flow name="data-failed-processing" doc:id="39e93b1b-a9e1-4172-96b4-ff9d1271c492" >
+		<batch:job jobName="faild-data-record" doc:id="019e1abd-ac49-4b7e-95e9-b394846a272f" >
+			<batch:process-records >
+				<batch:step name="Batch_Step2" doc:id="94622ee2-10f0-4e4f-ac72-80c6e2c31dbd" >
+					<foreach doc:name="For Each" doc:id="774ac7a3-6146-4ce3-8ff8-0cefe32be76b" >
+						<file:write doc:name="Write" doc:id="9f596df2-4edd-4d35-99f6-74d74926b7e7" path="C:\Users\temilla\Desktop\File\error_log" mode="APPEND"/>
+					</foreach>
+				</batch:step>
+				<flow-ref doc:name="send-email" doc:id="48a20258-8039-40ea-9ec7-fa9996afd362" name="send-email"/>
+			</batch:process-records>
+		</batch:job>
+	</flow>
+</mule>

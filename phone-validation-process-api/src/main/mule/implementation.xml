@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:volante="http://www.mulesoft.org/schema/mule/volante" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/volante http://www.mulesoft.org/schema/mule/volante/current/mule-volante.xsd">
+	<file:config name="File_Config" doc:name="File Config" doc:id="ba1873ec-89da-4d42-8fe0-048bdd4f2281" />
+	<flow name="implementation" doc:id="71a54f63-780e-44cb-8704-6b94c59ccc28" >
+		<logger level="INFO" doc:name="Logger" doc:id="adc41641-4b91-4f30-8865-2399bbe418d7" />
+		<validation:matches-regex doc:name="Matches regex" doc:id="0af8a10d-e11f-4051-9c6a-39cb9d8c691c" value="#[attributes.queryParams.phoneNumber]" regex="^[0-9]{11}$" message="invalid phone number" config-ref="Validation_Config"/>
+		
+		<http:request method="GET" doc:name="Request" doc:id="90d763d9-213d-4e69-ae88-e3d8b8ae24e8" config-ref="numVer_HTTP_Request_configuration" path="${http.path}">
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	number : attributes.queryParams.phoneNumber,
+	access_key : p('access_key') 
+}]]]></http:query-params>
+		</http:request>
+		<!-- <file:write doc:name="Write" doc:id="203075c1-9ecc-427a-a930-f3f23bb652f0" config-ref="File_Config" path="C:\Users\temilla\Desktop\file2\phone.json" />
+		 -->
+		<ee:transform doc:name="Transform Message" doc:id="13ece1d6-bfe5-44d6-9cc5-adef640232a9" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+
+---
+payload map(
+	phone:{
+		number: $.number,
+		local_f: $.local_format,
+		country_n: $.country_name
+	}
+)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="24587cdf-deab-4658-aedb-da85f7915e8d" message="#[payload]"/>
+	 </flow>
+	<flow name="implementationFlow" doc:id="d8c6e3ba-e819-4093-9146-b3476144a3ff" >
+		<ee:transform doc:name="Transform Message" doc:id="d82c74ad-64af-4a2b-83eb-8955841df02c" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+var myvar=[
+	
+		{"id": 123},
+		{"name" : "tom"},
+		{"lname": "a"}	
+	
+]
+---
+myvar reduce ($$ ++ $)
+	
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

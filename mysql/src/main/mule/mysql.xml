@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<flow name="mysqlFlow" doc:id="707ca7de-1dba-4e7b-ae87-ed35b0f0ee29" >
+		<http:listener doc:name="Listener" doc:id="5e41d7f6-e309-4293-af40-6b7445b2fd5e" config-ref="HTTP_Listener_config" path="/test"/>
+		<db:select doc:name="Select" doc:id="b69482cd-0dc3-45ea-b10b-40626c337524" config-ref="Database_Config">
+			<db:sql >select * from employee</db:sql>
+		</db:select>
+	</flow>
+</mule>
